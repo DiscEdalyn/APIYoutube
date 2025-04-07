@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube</title>
+    <link rel="stylesheet" href="estilo.css">
+</head>
+<body>
+    <h1>Buscar Videos de YouTube</h1>
+    <input type="text" id="query" placeholder="Buscar ... ">
+    <button onclick="searchVideos()">Buscar</button>
+    <div id="results"></div>
+
+    <script>
+        async function searchVideos() {
+            const query = document.getElementById("query").value;
+            const response = await fetch(`http://localhost:3000/search?q=${query}`);
+            const data = await response.json();
+            const resultsDiv = document.getElementById("results");
+            resultsDiv.innerHTML = "";
+
+            data.items.forEach(video => {
+                const videoElement = document.createElement("div");
+                videoElement.innerHTML = `
+                    <h3>${video.snippet.title}</h3>
+                    <img src="${video.snippet.thumbnails.default.url}" alt="${video.snippet.title}">
+                    <p>${video.snippet.description}</p>
+                    <a href="https://www.youtube.com/watch?v=${video.id.videoId}" target="_blank">Ver en YouTube</a>
+                    <hr>
+                `;
+                resultsDiv.appendChild(videoElement);
+            });
+        }
+    </script>
+</body>
+</html>
